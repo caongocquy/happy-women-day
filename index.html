@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chúc Mừng 8/3</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: black;
+      text-align: center;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      position: absolute;
+      width: 100%;
+      top: 20%;
+      font-size: 3em;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px pink;
+      }
+
+      to {
+        text-shadow: 0 0 20px white;
+      }
+    }
+
+    .flower,
+    .heart,
+    .balloon {
+      position: absolute;
+    }
+
+    .flower {
+      width: 40px;
+      height: 40px;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Rosa_rubiginosa_1.jpg/640px-Rosa_rubiginosa_1.jpg');
+      background-size: cover;
+      opacity: 0.9;
+      animation: rotateFlower 5s linear infinite;
+    }
+
+    .heart {
+      width: 30px;
+      height: 30px;
+      background-image: url('https://cdn-icons-png.flaticon.com/512/833/833472.png');
+      background-size: cover;
+      opacity: 0.8;
+    }
+
+    .balloon {
+      width: 40px;
+      height: 60px;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Balloons.svg/640px-Balloons.svg.png');
+      background-size: cover;
+    }
+
+    @keyframes rotateFlower {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Chúc mừng 8/3! Chúc mọi người có một ngày thật ý nghĩa, luôn mạnh khỏe, hạnh phúc và gặt hái nhiều thành công
+    trong cuộc sống. Mong rằng mỗi ngày đều tràn ngập niềm vui và những điều tốt đẹp! 🌸✨</h1>
+  <canvas id="fireworks"></canvas>
+  <script>
+    const canvas = document.getElementById("fireworks");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    class Firework {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.particles = [];
+        for (let i = 0; i < 50; i++) {
+          this.particles.push({
+            x: x,
+            y: y,
+            vx: (Math.random() - 0.5) * 4,
+            vy: (Math.random() - 0.5) * 4,
+            alpha: 1,
+            color: `hsl(${Math.random() * 360}, 100%, 50%)`
+          });
+        }
+      }
+      draw() {
+        this.particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= 0.02;
+        });
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        this.particles.forEach((p) => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, ${p.alpha})`;
+          ctx.fill();
+        });
+      }
+    }
+    let fireworks = [];
+    function animate() {
+      requestAnimationFrame(animate);
+      fireworks.forEach((f) => f.draw());
+    }
+    animate();
+    setInterval(() => {
+      fireworks.push(new Firework(Math.random() * canvas.width, Math.random() * canvas.height));
+    }, 800);
+    function createElement(className, speed) {
+      const element = document.createElement("div");
+      element.className = className;
+      element.style.left = Math.random() * window.innerWidth + "px";
+      element.style.top = className === "balloon" ? window.innerHeight + "px" : "0px";
+      document.body.appendChild(element);
+      let move = setInterval(() => {
+        element.style.top = (parseInt(element.style.top) + (className === "balloon" ? -2 : 2)) + "px";
+        if (parseInt(element.style.top) < 0 || parseInt(element.style.top) > window.innerHeight) {
+          clearInterval(move);
+          document.body.removeChild(element);
+        }
+      }, speed);
+    }
+    setInterval(() => createElement("flower", 50), 400);
+    setInterval(() => createElement("heart", 60), 600);
+    setInterval(() => createElement("balloon", 70), 1000);
+  </script>
+</body>
+
+</html>
